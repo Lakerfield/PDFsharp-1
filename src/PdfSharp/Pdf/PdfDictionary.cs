@@ -829,7 +829,7 @@ namespace PdfSharp.Pdf
                         Type type = GetValueType(key);
                         if (type != null)
                         {
-#if !NETFX_CORE
+#if !NETFX_CORE && !PORTABLE
                             Debug.Assert(typeof(PdfItem).IsAssignableFrom(type), "Type not allowed.");
                             if (typeof(PdfDictionary).IsAssignableFrom(type))
                             {
@@ -887,7 +887,7 @@ namespace PdfSharp.Pdf
                             Type type = GetValueType(key);
                             Debug.Assert(type != null, "No value type specified in meta information. Please send this file to PDFsharp support.");
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !PORTABLE
                             if (type != null && type != value.GetType())
                             {
                                 if (typeof(PdfDictionary).IsAssignableFrom(type))
@@ -987,7 +987,7 @@ namespace PdfSharp.Pdf
 
             PdfArray CreateArray(Type type, PdfArray oldArray)
             {
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
                 ConstructorInfo ctorInfo;
                 PdfArray array;
                 if (oldArray == null)
@@ -1048,7 +1048,7 @@ namespace PdfSharp.Pdf
 
             PdfDictionary CreateDictionary(Type type, PdfDictionary oldDictionary)
             {
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
                 ConstructorInfo ctorInfo;
                 PdfDictionary dict;
                 if (oldDictionary == null)
@@ -1107,7 +1107,7 @@ namespace PdfSharp.Pdf
 
             PdfItem CreateValue(Type type, PdfDictionary oldValue)
             {
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
                 ConstructorInfo ctorInfo = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
                     null, new Type[] { typeof(PdfDocument) }, null);
                 PdfObject obj = ctorInfo.Invoke(new object[] { _ownerDictionary.Owner }) as PdfObject;

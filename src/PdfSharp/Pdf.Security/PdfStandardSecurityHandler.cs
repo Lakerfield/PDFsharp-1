@@ -34,7 +34,7 @@ using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Internal;
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
 using System.Security.Cryptography;
 #endif
 
@@ -614,7 +614,7 @@ namespace PdfSharp.Pdf.Security
         /// </summary>
         byte[] _encryptionKey;
 
-#if !SILVERLIGHT && !UWP
+#if !SILVERLIGHT && !UWP && !PORTABLE
         /// <summary>
         /// The message digest algorithm MD5.
         /// </summary>

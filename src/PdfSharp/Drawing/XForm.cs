@@ -292,6 +292,7 @@ namespace PdfSharp.Drawing
         }
         internal FormState _formState;
 
+#if !PORTABLE
         /// <summary>
         /// Get the width of the page identified by the property PageNumber.
         /// </summary>
@@ -311,6 +312,7 @@ namespace PdfSharp.Drawing
             //get { return templateSize.height; }
             get { return _viewBox.Height; }
         }
+#endif
 
         /// <summary>
         /// Get the width in point of this image.

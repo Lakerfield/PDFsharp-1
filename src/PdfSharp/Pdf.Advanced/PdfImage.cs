@@ -262,6 +262,11 @@ namespace PdfSharp.Pdf.Advanced
 
             byte[] imageBits = null;
             int streamLength = 0;
+#if PORTABLE
+            using (MemoryStream memory2 = _image.AsJpeg())
+                imageBits = memory2.ToArray();
+            streamLength = imageBits.Length;
+#endif
 
 #if CORE || GDI || WPF
             if (_image._importedImage != null)
@@ -345,9 +350,9 @@ namespace PdfSharp.Pdf.Advanced
             memory = new MemoryStream();
             ownMemory = true;
 #endif
-            // THHO4THHO Use ImageImporterJPEG here to avoid redundant code.
+      // THHO4THHO Use ImageImporterJPEG here to avoid redundant code.
 
-            if (imageBits == null)
+      if (imageBits == null)
             {
                 streamLength = (int)memory.Length;
                 imageBits = new byte[streamLength];
@@ -474,6 +479,10 @@ namespace PdfSharp.Pdf.Advanced
             {
                 Elements[Keys.ColorSpace] = new PdfName("/DeviceRGB");
             }
+#endif
+
+#if PORTABLE
+            Elements[Keys.ColorSpace] = new PdfName("/DeviceRGB");
 #endif
         }
 
@@ -863,16 +872,21 @@ namespace PdfSharp.Pdf.Advanced
             Debug.Assert(streamLength > 0, "Bitmap image encoding failed.");
             if (streamLength > 0)
             {
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
                 // THHO4STLA: available with wrt, but not with wrt81.
                 // Note: imageBits.Length can be larger than streamLength. Do not use these extra bytes!
                 byte[] imageBits = memory.GetBuffer();
-#elif NETFX_CORE 
+#elif NETFX_CORE
                 byte[] imageBits = new byte[streamLength];
                 memory.Seek(0, SeekOrigin.Begin);
                 memory.Read(imageBits, 0, streamLength);
                 memory.Close();
 #elif UWP
+                byte[] imageBits = new byte[streamLength];
+                memory.Seek(0, SeekOrigin.Begin);
+                memory.Read(imageBits, 0, streamLength);
+                memory.Dispose();
+#elif PORTABLE
                 byte[] imageBits = new byte[streamLength];
                 memory.Seek(0, SeekOrigin.Begin);
                 memory.Read(imageBits, 0, streamLength);
@@ -1067,7 +1081,7 @@ namespace PdfSharp.Pdf.Advanced
                 byte[] imageBits = new byte[streamLength];
                 memory.Seek(0, SeekOrigin.Begin);
                 memory.Read(imageBits, 0, streamLength);
-#if !UWP
+#if !UWP && !PORTABLE
                 memory.Close();
 #else
                 memory.Dispose();

@@ -49,7 +49,7 @@ namespace PdfSharp.Drawing
         /// Initializes a new instance of the <see cref="XColorResourceManager"/> class.
         /// </summary>
         public XColorResourceManager()
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
             : this(Thread.CurrentThread.CurrentUICulture)
 #else
             : this(CultureInfo.CurrentUICulture)

@@ -64,7 +64,7 @@ namespace PdfSharp.Drawing
             int pageNumber;
             path = ExtractPageNumber(path, out pageNumber);
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !PORTABLE
             path = Path.GetFullPath(path);
             if (!File.Exists(path))
                 throw new FileNotFoundException(PSSR.FileNotFound(path));
@@ -220,6 +220,7 @@ namespace PdfSharp.Drawing
         }
         int _pageCount = -1;
 
+#if !PORTABLE
         /// <summary>
         /// Gets the width in point of the page identified by the property PageNumber.
         /// </summary>
@@ -245,6 +246,7 @@ namespace PdfSharp.Drawing
                 return page.Height;
             }
         }
+#endif
 
         /// <summary>
         /// Gets the width in point of the page identified by the property PageNumber.

@@ -28,6 +28,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+#if PORTABLE
+using PdfSharp.Fonts;
+#endif
 
 namespace PdfSharp.Drawing.BarCodes
 {
@@ -147,7 +150,11 @@ namespace PdfSharp.Drawing.BarCodes
         internal void RenderText(BarCodeRenderInfo info)
         {
             if (info.Font == null)
+#if PORTABLE
+                info.Font = new XFont(GlobalFontSettings.FontResolver.DefaultFontName, Size.Height / 6);
+#else
                 info.Font = new XFont("Courier New", Size.Height / 6);
+#endif
             XPoint center = info.Position + CalcDistance(Anchor, AnchorType.TopLeft, Size);
 
             switch (TextLocation)

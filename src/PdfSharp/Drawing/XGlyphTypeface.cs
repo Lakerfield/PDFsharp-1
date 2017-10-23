@@ -154,6 +154,21 @@ namespace PdfSharp.Drawing
         }
 #endif
 
+        public XGlyphTypeface(string key, XFontSource fontSource)
+        {
+            string familyName = fontSource.Fontface.name.Name;
+            _fontFamily = new XFontFamily(familyName, false);
+            _fontface = fontSource.Fontface;
+            _isBold = _fontface.os2.IsBold;
+            _isItalic = _fontface.os2.IsItalic;
+
+            _key = key;
+            //_fontFamily =xfont  FontFamilyCache.GetFamilyByName(familyName);
+            _fontSource = fontSource;
+
+            Initialize();
+        }
+
         public static XGlyphTypeface GetOrCreateFrom(string familyName, FontResolvingOptions fontResolvingOptions)
         {
             // Check cache for requested type face.
@@ -217,6 +232,9 @@ namespace PdfSharp.Drawing
                 }
                 else
                 {
+                    // Create new and exclusively used font family for custom font resolver retrieved font source.
+                    fontFamily = XFontFamily.GetOrCreateFontFamily(fontResolverInfo.FaceName);
+
                     // Case: fontResolverInfo was created by custom font resolver.
 
                     // Get or create font family for custom font resolver retrieved font source.
@@ -227,7 +245,7 @@ namespace PdfSharp.Drawing
                 XFontSource fontSource = FontFactory.GetFontSourceByFontName(fontResolverInfo.FaceName);
                 Debug.Assert(fontSource != null);
 
-                // Each font source already contains its OpenTypeFontface.
+        // Each font source already contains its OpenTypeFontface.
 #if CORE || GDI
                 glyphTypeface = new XGlyphTypeface(typefaceKey, fontFamily, fontSource, fontResolverInfo.StyleSimulations, gdiFont);
 #endif
@@ -237,7 +255,10 @@ namespace PdfSharp.Drawing
 #if NETFX_CORE || UWP
                 glyphTypeface = new XGlyphTypeface(typefaceKey, fontFamily, fontSource, fontResolverInfo.StyleSimulations);
 #endif
-                GlyphTypefaceCache.AddGlyphTypeface(glyphTypeface);
+#if PORTABLE
+                glyphTypeface = new XGlyphTypeface(typefaceKey, fontSource);
+#endif
+        GlyphTypefaceCache.AddGlyphTypeface(glyphTypeface);
             }
             finally { Lock.ExitFontFactory(); }
             return glyphTypeface;

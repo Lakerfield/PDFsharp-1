@@ -107,7 +107,9 @@
 // PDFsharp based on 'WinRT'.
 #elif UWP
 // PDFsharp based on 'Windows Universal Platform'.
+#elif PORTABLE
+// PDFsharp based on '.Net Standard'.
 
 #else
-#error Either 'CORE', 'GDI', 'WPF', 'SILVERLIGHT', 'WINDOWS_PHONE', or 'NETFX_CORE' must be defined. Or UWP.
+#error Either 'PORTABLE', 'CORE', 'GDI', 'WPF', 'SILVERLIGHT', 'WINDOWS_PHONE', or 'NETFX_CORE' must be defined. Or UWP.
 #endif

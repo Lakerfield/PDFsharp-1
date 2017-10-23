@@ -71,7 +71,7 @@ namespace PdfSharp.Pdf.IO
         /// </summary>
         public static int TestPdfFile(string path)
         {
-#if !NETFX_CORE
+#if !NETFX_CORE && !PORTABLE
             FileStream stream = null;
             try
             {
@@ -206,7 +206,7 @@ namespace PdfSharp.Pdf.IO
         /// </summary>
         public static PdfDocument Open(string path, string password, PdfDocumentOpenMode openmode, PdfPasswordProvider provider)
         {
-#if !NETFX_CORE
+#if !NETFX_CORE && !PORTABLE
             PdfDocument document;
             Stream stream = null;
             try

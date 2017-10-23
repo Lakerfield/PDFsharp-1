@@ -51,6 +51,10 @@ using PdfSharp.Drawing.Internal;
 using PdfSharp.Internal;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
+#if PORTABLE
+using MigraDoc.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes;
+using static MigraDoc.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes.ImageSource;
+#endif
 
 // WPFHACK
 #pragma warning disable 0169
@@ -186,8 +190,10 @@ namespace PdfSharp.Drawing
         // Useful stuff here: http://stackoverflow.com/questions/350027/setting-wpf-image-source-in-code
         XImage(string path)
         {
-#if !NETFX_CORE && !UWP
-            path = Path.GetFullPath(path);
+#if PORTABLE
+          _source = ImageSource.FromFile(path);
+#elif !NETFX_CORE && !UWP
+      path = Path.GetFullPath(path);
             if (!File.Exists(path))
                 throw new FileNotFoundException(PSSR.FileNotFound(path));
             //throw new FileNotFoundException(PSSR.FileNotFound(path), path);
@@ -234,7 +240,8 @@ namespace PdfSharp.Drawing
             Initialize();
         }
 
-        XImage(Stream stream)
+#if !PORTABLE
+    XImage(Stream stream)
         {
             // Create a dummy unique path.
             _path = "*" + Guid.NewGuid().ToString("B");
@@ -294,6 +301,31 @@ namespace PdfSharp.Drawing
             Initialize();
         }
 
+#else
+        XImage(IImageSource imageSource)
+        {
+            _source = imageSource;
+            _path = _source.Name;
+            Initialize();
+        }
+
+        XImage(Func<Stream> stream)
+        {
+            // Create a dummy unique path.
+            _path = "*" + Guid.NewGuid().ToString("B");
+            _source = ImageSource.FromStream(_path, stream);
+            Initialize();
+        }
+
+        XImage(Func<byte[]> data)
+        {
+            // Create a dummy unique path.
+            _path = "*" + Guid.NewGuid().ToString("B");
+            _source = ImageSource.FromBinary(_path, data);
+            Initialize();
+        }
+#endif
+
 #if GDI //|| CORE
 #if UseGdiObjects
         /// <summary>
@@ -334,11 +366,11 @@ namespace PdfSharp.Drawing
         }
 #endif
 
-        /// <summary>
-        /// Creates an image from the specified file.
-        /// </summary>
-        /// <param name="path">The path to a BMP, PNG, GIF, JPEG, TIFF, or PDF file.</param>
-        public static XImage FromFile(string path)
+    /// <summary>
+    /// Creates an image from the specified file.
+    /// </summary>
+    /// <param name="path">The path to a BMP, PNG, GIF, JPEG, TIFF, or PDF file.</param>
+    public static XImage FromFile(string path)
         {
             if (PdfReader.TestPdfFile(path) > 0)
                 return new XPdfForm(path);
@@ -350,7 +382,7 @@ namespace PdfSharp.Drawing
         /// Silverlight supports PNG and JPEF only.
         /// </summary>
         /// <param name="stream">The stream containing a BMP, PNG, GIF, JPEG, TIFF, or PDF file.</param>
-        public static XImage FromStream(Stream stream)
+        public static XImage FromStream(Func<Stream> stream)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -359,6 +391,11 @@ namespace PdfSharp.Drawing
             //if (PdfReader.TestPdfFile(path) > 0)
             //  return new XPdfForm(path);
             return new XImage(stream);
+        }
+
+        public static XImage FromImageSource(IImageSource imageSouce)
+        {
+            return new XImage(imageSouce);
         }
 
 #if DEBUG
@@ -445,7 +482,7 @@ namespace PdfSharp.Drawing
 
             if (PdfReader.TestPdfFile(path) > 0)
                 return true;
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
             return File.Exists(path);
 #else
             return false;
@@ -692,7 +729,24 @@ namespace PdfSharp.Drawing
             }
 #endif
 #endif
+#if PORTABLE
+            if (_source != null)
+            {
+                //We always get a jpeg from an image source
+                _format = XImageFormat.Jpeg;
+            }
+#endif
         }
+
+#if PORTABLE
+        public MemoryStream AsJpeg()
+        {
+            var ms = new MemoryStream();
+            _source.SaveAsJpeg(ms);
+            ms.Position = 0;
+            return ms;
+        }
+#endif
 
 #if WPF
         /// <summary>
@@ -881,10 +935,10 @@ namespace PdfSharp.Drawing
         }
 #endif
 
-        /// <summary>
-        /// Under construction
-        /// </summary>
-        public void Dispose()
+    /// <summary>
+    /// Under construction
+    /// </summary>
+    public void Dispose()
         {
             Dispose(true);
             //GC.SuppressFinalize(this);
@@ -923,6 +977,7 @@ namespace PdfSharp.Drawing
         }
         bool _disposed;
 
+#if !PORTABLE
         /// <summary>
         /// Gets the width of the image.
         /// </summary>
@@ -1004,6 +1059,7 @@ namespace PdfSharp.Drawing
 #endif
             }
         }
+#endif
 
 #if CORE || GDI || WPF
         /// <summary>
@@ -1070,6 +1126,9 @@ namespace PdfSharp.Drawing
                 //GetImagePropertiesAsync
                 return 100;
 #endif
+#if PORTABLE
+                return _source.Width * 72 / 96.0;
+#endif
             }
         }
 
@@ -1121,6 +1180,9 @@ namespace PdfSharp.Drawing
 #if NETFX_CORE || UWP
                 return _wrtImage.PixelHeight; //_gdi Image.Width * 72 / _gdiImage.HorizontalResolution;
 #endif
+#if PORTABLE
+                return _source.Height * 72 / 96.0;
+#endif
             }
         }
 
@@ -1167,6 +1229,9 @@ namespace PdfSharp.Drawing
 #if NETFX_CORE || UWP
                 return _wrtImage.PixelWidth;
 #endif
+#if PORTABLE
+                return _source.Width;
+#endif
             }
         }
 
@@ -1212,6 +1277,9 @@ namespace PdfSharp.Drawing
 #endif
 #if NETFX_CORE || UWP
                 return _wrtImage.PixelHeight;
+#endif
+#if PORTABLE
+                return _source.Height;
 #endif
             }
         }
@@ -1270,6 +1338,9 @@ namespace PdfSharp.Drawing
 #if NETFX_CORE || UWP
                 return 96;
 #endif
+#if PORTABLE
+                return 96;
+#endif
             }
         }
 
@@ -1317,6 +1388,9 @@ namespace PdfSharp.Drawing
 #endif
 #endif
 #if NETFX_CORE || UWP
+                return 96;
+#endif
+#if PORTABLE
                 return 96;
 #endif
             }
@@ -1547,15 +1621,19 @@ namespace PdfSharp.Drawing
         /// </summary>
         internal string _path;
 
+#if !PORTABLE
         /// <summary>
         /// Contains a reference to the original stream if image was created from a stream.
         /// </summary>
         internal Stream _stream;
+#else
+      private IImageSource _source;
+#endif
 
-        /// <summary>
-        /// Cache PdfImageTable.ImageSelector to speed up finding the right PdfImage
-        /// if this image is used more than once.
-        /// </summary>
-        internal PdfImageTable.ImageSelector _selector;
+    /// <summary>
+    /// Cache PdfImageTable.ImageSelector to speed up finding the right PdfImage
+    /// if this image is used more than once.
+    /// </summary>
+    internal PdfImageTable.ImageSelector _selector;
     }
 }

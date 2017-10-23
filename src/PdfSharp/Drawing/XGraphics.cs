@@ -430,6 +430,47 @@ namespace PdfSharp.Drawing  // #??? Clean up
             Initialize();
         }
 
+#if PORTABLE
+        XGraphics(XSize size, XGraphicsUnit pageUnit, XPageDirection pageDirection)
+        {
+            if (size == null)
+                throw new ArgumentNullException("size");
+            
+
+            _gsStack = new GraphicsStateStack(this);
+            _pageSizePoints = new XSize(size.Width, size.Height);
+            switch (pageUnit)
+            {
+                case XGraphicsUnit.Point:
+                    _pageSize = new XSize(size.Width, size.Height);
+                    break;
+
+                case XGraphicsUnit.Inch:
+                    _pageSize = new XSize(XUnit.FromPoint(size.Width).Inch, XUnit.FromPoint(size.Height).Inch);
+                    break;
+
+                case XGraphicsUnit.Millimeter:
+                    _pageSize = new XSize(XUnit.FromPoint(size.Width).Millimeter, XUnit.FromPoint(size.Height).Millimeter);
+                    break;
+
+                case XGraphicsUnit.Centimeter:
+                    _pageSize = new XSize(XUnit.FromPoint(size.Width).Centimeter, XUnit.FromPoint(size.Height).Centimeter);
+                    break;
+
+                case XGraphicsUnit.Presentation:
+                    _pageSize = new XSize(XUnit.FromPoint(size.Width).Presentation, XUnit.FromPoint(size.Height).Presentation);
+                    break;
+
+                default:
+                    throw new NotImplementedException("unit");
+            }
+            _pageUnit = pageUnit;
+            _pageDirection = pageDirection;
+
+            Initialize();
+        }
+#endif
+
         /// <summary>
         /// Initializes a new instance of the XGraphics class used for drawing on a form.
         /// </summary>
@@ -583,6 +624,9 @@ namespace PdfSharp.Drawing  // #??? Clean up
 #endif
 #if NETFX_CORE || UWP // NETFX_CORE_TODO
             return null;
+#endif
+#if PORTABLE
+            return new XGraphics(size, pageUnit, pageDirection);
 #endif
         }
 
@@ -4302,6 +4346,12 @@ namespace PdfSharp.Drawing  // #??? Clean up
                 _gsStack.Push(iState);
             }
 #endif
+#if PORTABLE   
+            xState = new XGraphicsState();
+            InternalGraphicsState iState = new InternalGraphicsState(this, xState);
+            iState.Transform = _transform;
+            _gsStack.Push(iState);
+#endif
 
             if (_renderer != null)
                 _renderer.Save(xState);
@@ -4345,6 +4395,11 @@ namespace PdfSharp.Drawing  // #??? Clean up
                 _gsStack.Restore(state.InternalState);
                 _transform = state.InternalState.Transform;
             }
+#endif
+
+#if PORTABLE
+            _gsStack.Restore(state.InternalState);
+            _transform = state.InternalState.Transform;
 #endif
 
             if (_renderer != null)

@@ -57,7 +57,7 @@ namespace PdfSharp.Pdf.IO
         public void Close(bool closeUnderlyingStream)
         {
             if (_stream != null && closeUnderlyingStream)
-#if UWP
+#if UWP || PORTABLE
             _stream.Dispose();
 #else
             _stream.Close();

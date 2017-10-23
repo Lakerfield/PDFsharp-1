@@ -666,6 +666,9 @@ namespace PdfSharp.Drawing
 #if WPF && GDI  // Testing only
             return value;
 #endif
+#if PORTABLE
+            return value;
+#endif
         }
 
         /// <summary>

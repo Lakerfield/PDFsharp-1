@@ -87,6 +87,9 @@ namespace PdfSharp.Drawing
 #if NETFX_CORE || UWP
                 return _wrtImage.PixelWidth;
 #endif
+#if PORTABLE
+                return PixelWidth;
+#endif
             }
         }
 
@@ -116,6 +119,9 @@ namespace PdfSharp.Drawing
 #endif
 #if NETFX_CORE || UWP
                 return _wrtImage.PixelHeight;
+#endif
+#if PORTABLE
+                return PixelHeight;
 #endif
             }
         }

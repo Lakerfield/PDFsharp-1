@@ -27,6 +27,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+#if !PORTABLE
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -52,3 +53,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyName("")]
+#endif

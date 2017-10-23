@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;PORTABLE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Forms\**" />
+    <Compile Remove="Silverlight\**" />
+    <Compile Remove="Windows\**" />
+    <EmbeddedResource Remove="Forms\**" />
+    <EmbeddedResource Remove="Silverlight\**" />
+    <EmbeddedResource Remove="Windows\**" />
+    <None Remove="Forms\**" />
+    <None Remove="Silverlight\**" />
+    <None Remove="Windows\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Drawing.BarCodes\DataMatrixImage.opensource.cs" />
+    <Compile Remove="SilverlightInternals\AgDrawingContext.cs" />
+    <Compile Remove="SilverlightInternals\AgExtensions.cs" />
+    <Compile Remove="SilverlightInternals\Pen.cs" />
+  </ItemGroup>
+
+</Project>

@@ -472,7 +472,7 @@ namespace PdfSharp.SharpZipLib.Zip
         // This isn't so great but is better than nothing.
         // Trying to work out an appropriate OEM code page would be good.
         // 850 is a good default for English speakers particularly in Europe.
-#if SILVERLIGHT || NETFX_CORE || UWP
+#if SILVERLIGHT || NETFX_CORE || UWP || PORTABLE
         // TODO Do we need this for PDFsharp? If so, make it work.
         static int defaultCodePage = 65001;
 #else
@@ -537,7 +537,7 @@ namespace PdfSharp.SharpZipLib.Zip
                 return string.Empty;
             }
 
-#if SILVERLIGHT || NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE || PORTABLE
             return Encoding.GetEncoding("utf-8").GetString(data, 0, count);
 #else
             return Encoding.GetEncoding(DefaultCodePage).GetString(data, 0, count);
@@ -631,7 +631,7 @@ namespace PdfSharp.SharpZipLib.Zip
                 return new byte[0];
             }
 
-#if SILVERLIGHT || NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE || PORTABLE
             return Encoding.GetEncoding("utf-8").GetBytes(str);
 #else
             return Encoding.GetEncoding(DefaultCodePage).GetBytes(str);

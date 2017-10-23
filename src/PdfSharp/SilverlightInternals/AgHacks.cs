@@ -27,7 +27,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if SILVERLIGHT || UWP
+#if SILVERLIGHT || UWP || PORTABLE
 using System;
 
 #if SILVERLIGHT
@@ -40,6 +40,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+#endif
+
+#if PORTABLE
+public class BrowsableAttribute : Attribute
+{
+    public BrowsableAttribute(bool browsable)
+    {
+    }
+}
 #endif
 
 /// <summary>
@@ -88,8 +97,54 @@ namespace PdfSharp
             : base(message, innerException)
         { }
     }
+#if PORTABLE
+    public enum TypeCode
+    {
 
-#if SILVERLIGHT
+        Empty = 0,
+        Object = 1,
+        DBNull = 2,
+        Boolean = 3,
+        Char = 4,
+        SByte = 5,
+        Byte = 6,
+        Int16 = 7,
+        UInt16 = 8,
+        Int32 = 9,
+        UInt32 = 10,
+        Int64 = 11,
+        UInt64 = 12,
+        Single = 13,
+        Double = 14,
+        Decimal = 15,
+        DateTime = 16,
+        String = 18
+    }
+
+    public interface IConvertible
+    {
+        TypeCode GetTypeCode();
+
+        bool ToBoolean(IFormatProvider provider);
+        byte ToByte(IFormatProvider provider);
+        char ToChar(IFormatProvider provider);
+        DateTime ToDateTime(IFormatProvider provider);
+        decimal ToDecimal(IFormatProvider provider);
+        double ToDouble(IFormatProvider provider);
+        short ToInt16(IFormatProvider provider);
+        int ToInt32(IFormatProvider provider);
+        long ToInt64(IFormatProvider provider);
+        sbyte ToSByte(IFormatProvider provider);
+        float ToSingle(IFormatProvider provider);
+        string ToString(IFormatProvider provider);
+        object ToType(Type conversionType, IFormatProvider provider);
+        ushort ToUInt16(IFormatProvider provider);
+        uint ToUInt32(IFormatProvider provider);
+        ulong ToUInt64(IFormatProvider provider);
+    }
+#endif
+
+#if SILVERLIGHT || PORTABLE
     /// <summary>
     /// The exception that is thrown when the value of an argument is outside
     /// the allowable range of values as defined by the invoked method.

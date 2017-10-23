@@ -266,5 +266,8 @@ namespace PdfSharp
         // .net without GDI+ and WPF
         public const string Technology = "";  // no extension
 #endif
+#if PORTABLE
+        public const string Technology = "-netstandard";
+#endif
     }
 }

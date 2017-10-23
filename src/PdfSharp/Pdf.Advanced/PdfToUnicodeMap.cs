@@ -89,7 +89,7 @@ namespace PdfSharp.Pdf.Advanced
             }
 
             MemoryStream ms = new MemoryStream();
-#if !SILVERLIGHT && !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE && !PORTABLE
             StreamWriter wrt = new StreamWriter(ms, Encoding.ASCII);
 #else
             StreamWriter wrt = new StreamWriter(ms, Encoding.UTF8);
@@ -107,7 +107,7 @@ namespace PdfSharp.Pdf.Advanced
             wrt.WriteLine("endbfrange");
 
             wrt.Write(suffix);
-#if !UWP
+#if !UWP && !PORTABLE
             wrt.Close();
 #else
             wrt.Dispose();
@@ -115,7 +115,7 @@ namespace PdfSharp.Pdf.Advanced
 
             // Compress like content streams
             byte[] bytes = ms.ToArray();
-#if !UWP
+#if !UWP && !PORTABLE
             ms.Close();
 #else
             ms.Dispose();

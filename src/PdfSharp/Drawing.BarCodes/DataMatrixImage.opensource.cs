@@ -209,7 +209,7 @@ namespace PdfSharp.Drawing.BarCodes
       XImage image = XImage.FromGdiPlusImage(bm);
       image.Interpolate = false;
       return image;
-#elif WPF
+#elif WPF || PORTABLE
             return null;
 #endif
         }

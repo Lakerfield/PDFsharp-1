@@ -106,6 +106,9 @@ namespace PdfSharp.Fonts
             //GlyphTypeface wpfGlyphTypeface;
             XFontSource fontSource = null;//CreateFontSource(familyName, isBold, isItalic, out wpfGlyphTypeface, typefaceKey);
 #endif
+#if PORTABLE
+            XFontSource fontSource = null;
+#endif
             // If no such font exists return null. PDFsharp will fail.
             if (fontSource == null)
                 return null;

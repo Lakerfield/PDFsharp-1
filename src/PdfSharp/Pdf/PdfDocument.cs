@@ -93,7 +93,7 @@ namespace PdfSharp.Pdf
             Info.CreationDate = _creation;
 
             // TODO 4STLA: encapsulate the whole c'tor with #if !NETFX_CORE?
-#if !NETFX_CORE
+#if !NETFX_CORE && !PORTABLE
             _outStream = new FileStream(filename, FileMode.Create);
 #else
             throw new NotImplementedException();
@@ -252,7 +252,7 @@ namespace PdfSharp.Pdf
             if (!CanModify)
                 throw new InvalidOperationException(PSSR.CannotModify);
 
-#if !NETFX_CORE
+#if !NETFX_CORE || PORTABLE
             using (Stream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 Save(stream);
@@ -329,7 +329,7 @@ namespace PdfSharp.Pdf
                 if (stream != null)
                 {
                     if (closeStream)
-#if UWP
+#if UWP || PORTABLE
                         stream.Dispose();
 #else
                         stream.Close();

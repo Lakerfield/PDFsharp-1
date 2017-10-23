@@ -28,6 +28,9 @@
 #endregion
 
 using PdfSharp.Drawing;
+#if PORTABLE
+using PdfSharp.Fonts;
+#endif
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Annotations;
 using PdfSharp.Pdf.Internal;
@@ -67,8 +70,11 @@ namespace PdfSharp.Pdf.AcroForms
             get { return _font; }
             set { _font = value; }
         }
+#if PORTABLE
+        XFont _font = new XFont(GlobalFontSettings.FontResolver.DefaultFontName, 10);
+#else
         XFont _font = new XFont("Courier New", 10);
-
+#endif
         /// <summary>
         /// Gets or sets the foreground color of the field.
         /// </summary>

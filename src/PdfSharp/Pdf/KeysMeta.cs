@@ -193,7 +193,7 @@ namespace PdfSharp.Pdf
             //                Test.It();
             //            }
             //#endif
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
             FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
             foreach (FieldInfo field in fields)
             {
@@ -224,7 +224,7 @@ namespace PdfSharp.Pdf
 #endif
         }
 
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || PORTABLE
         // Background: The function GetRuntimeFields gets constant fields only for the specified type,
         // not for its base types. So we have to walk recursively through base classes.
         // The docmentation says full trust for the immediate caller is required for property BaseClass.

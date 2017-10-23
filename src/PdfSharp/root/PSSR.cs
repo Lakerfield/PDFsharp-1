@@ -356,7 +356,7 @@ namespace PdfSharp
                             // Force the English language.
                             System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
 #endif
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !PORTABLE
                             _resmngr = new ResourceManager("PdfSharp.Resources.Messages",
                                 Assembly.GetExecutingAssembly());
 #else
@@ -378,7 +378,7 @@ namespace PdfSharp
         [Conditional("DEBUG")]
         public static void TestResourceMessages()
         {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !PORTABLE
             string[] names = Enum.GetNames(typeof(PSMsgID));
             foreach (string name in names)
             {

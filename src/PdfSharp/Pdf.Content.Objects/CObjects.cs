@@ -315,7 +315,7 @@ namespace PdfSharp.Pdf.Content.Objects  // TODO: split into single files
             int count = (int)stream.Length;
             byte[] bytes = new byte[count];
             stream.Read(bytes, 0, count);
-#if !UWP
+#if !UWP && !PORTABLE
             stream.Close();
 #else
             stream.Dispose();

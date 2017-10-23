@@ -96,12 +96,14 @@ namespace PdfSharp.Fonts
                     // If resolved by custom font resolver register info and font source.
                     if (fontResolverInfo != null && !(fontResolverInfo is PlatformFontResolverInfo))
                     {
+#if !PORTABLE
                         // OverrideStyleSimulations is true only for internal quality tests.
                         if (fontResolvingOptions.OverrideStyleSimulations)
                         {
                             // Override style simulation returned by custom font resolver.
                             fontResolverInfo = new FontResolverInfo(fontResolverInfo.FaceName, fontResolvingOptions.MustSimulateBold, fontResolvingOptions.MustSimulateItalic, fontResolverInfo.CollectionNumber);
                         }
+#endif
 
                         string resolverInfoKey = fontResolverInfo.Key;
                         FontResolverInfo existingFontResolverInfo;

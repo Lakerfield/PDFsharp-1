@@ -265,6 +265,9 @@ namespace PdfSharp.Drawing
 #if NETFX_CORE || UWP
             throw new InvalidOperationException("In NETFX_CORE build it is the responsibility of the developer to provide all required font faces.");
 #endif
+#if PORTABLE
+            return false;
+#endif
         }
 
         /// <summary>
