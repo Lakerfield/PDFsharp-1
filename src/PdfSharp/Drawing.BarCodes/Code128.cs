@@ -141,7 +141,12 @@ namespace PdfSharp.Drawing.BarCodes
         private void RenderText(BarCodeRenderInfo info)
         {
             if (info.Font == null)
-                info.Font = new XFont("Courier New", this.Size.Height / 6);
+#if PORTABLE
+                info.Font = new XFont(Fonts.GlobalFontSettings.FontResolver.DefaultFontName, Size.Height / 6);
+#else
+                info.Font = new XFont("Courier New", Size.Height / 6);
+#endif
+
             XPoint center = info.Position + CodeBase.CalcDistance(Anchor, AnchorType.TopLeft, Size);
             if (this.TextLocation == TextLocation.Above)
                 info.Gfx.DrawString(Text, info.Font, info.Brush, new XRect(center, Size), XStringFormats.TopCenter);
