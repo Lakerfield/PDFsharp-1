@@ -482,7 +482,7 @@ namespace PdfSharp.Drawing
 
             if (PdfReader.TestPdfFile(path) > 0)
                 return true;
-#if !NETFX_CORE && !UWP && !PORTABLE
+#if !NETFX_CORE && !UWP
             return File.Exists(path);
 #else
             return false;
