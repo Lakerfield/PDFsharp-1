@@ -5,7 +5,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>StrongnameKey.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>PdfSharp.Charting</AssemblyName>
-    <RootNamespace>PdfSharp.Charting</RootNamespace>
+    <RootNamespace>PdfSharp</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
