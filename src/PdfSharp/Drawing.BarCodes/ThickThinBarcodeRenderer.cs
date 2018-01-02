@@ -55,6 +55,13 @@ namespace PdfSharp.Drawing.BarCodes
             if (TextLocation != TextLocation.None)
                 info.BarHeight *= 4.0 / 5;
 
+            if (info.Font == null)
+#if PORTABLE
+                info.Font = new XFont(GlobalFontSettings.FontResolver.DefaultFontName, Size.Height / 6);
+#else
+                info.Font = new XFont("Courier New", Size.Height / 6);
+#endif
+
 #if DEBUG_
             XColor back = XColors.LightSalmon;
             back.A = 0.3;
@@ -149,12 +156,6 @@ namespace PdfSharp.Drawing.BarCodes
 
         internal void RenderText(BarCodeRenderInfo info)
         {
-            if (info.Font == null)
-#if PORTABLE
-                info.Font = new XFont(GlobalFontSettings.FontResolver.DefaultFontName, Size.Height / 6);
-#else
-                info.Font = new XFont("Courier New", Size.Height / 6);
-#endif
             XPoint center = info.Position + CalcDistance(Anchor, AnchorType.TopLeft, Size);
 
             switch (TextLocation)

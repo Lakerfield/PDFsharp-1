@@ -46,9 +46,6 @@ namespace PdfSharp.Drawing.BarCodes
         public BarCode(string text, XSize size, CodeDirection direction)
             : base(text, size, direction)
         {
-            Text = text;
-            Size = size;
-            Direction = direction;
         }
 
         /// <summary>
